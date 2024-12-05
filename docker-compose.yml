@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  backend:
+    image: frappe/erpnext:v15.44.0
+    command: >
+      /home/frappe/frappe-bench/env/bin/gunicorn
+      --chdir=/home/frappe/frappe-bench/sites
+      --bind=0.0.0.0:8000
+      --threads=4
+      --workers=2
+      --worker-class=gthread
+      --worker-tmp-dir=/dev/shm
+      --timeout=120
+      --env=development
+      frappe.app:application
+    environment:
+      - FRAPPE_ENV=development
+    volumes:
+      - pwd_sites:/home/frappe/frappe-bench/sites
+      - pwd_logs:/home/frappe/frappe-bench/logs
+      - pwd_assets:/home/frappe/frappe-bench/sites/assets
+    ports:
+      - "8000:8000"
+
+volumes:
+  pwd_sites:
+  pwd_logs:
+  pwd_assets:
